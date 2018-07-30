@@ -32,13 +32,26 @@ class BooksApp extends Component {
 		this.setState({ showSearchPage: false })
 	}
 
+	restoreState = (book, shelf) => {
+		book["shelf"] = shelf
+		this.setState(state => ({
+			books: state.books.filter(b => b.id !== book.id).concat([book])
+		}))
+	}
+
 	moveBookToShelf = (book, shelf) => {
+		const previousShelf = book.shelf
 		book["shelf"] = shelf
 		this.setState(state => ({
 			books: state.books.filter(b => b.id !== book.id).concat([book])
 		}))
 
 		BooksAPI.update(book, shelf)
+		.then(resp => {
+			if(!resp[shelf].filter(id => id === book.id).length)
+				this.restoreState(book, previousShelf)
+		})
+		.catch(() => this.restoreState(book, previousShelf))
 	}
 
 	render(){
@@ -60,6 +73,8 @@ class BooksApp extends Component {
 				shelf: "none"
 			}
 		]
+
+		console.log(this.state)
 
 		return(
 		  <div className="app">
