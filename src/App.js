@@ -33,12 +33,12 @@ class BooksApp extends Component {
 	}
 
 	moveBookToShelf = (book, shelf) => {
+		book["shelf"] = shelf
+		this.setState(state => ({
+			books: state.books.filter(b => b.id !== book.id).concat([book])
+		}))
+
 		BooksAPI.update(book, shelf)
-		.then(() => {
-			BooksAPI.getAll().then( books => {
-				this.setState({ books })
-			})
-		})
 	}
 
 	render(){

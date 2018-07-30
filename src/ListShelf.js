@@ -21,7 +21,7 @@ class ListShelf extends Component {
 						<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
 						<div className="book-shelf-changer">
 						  <select defaultValue={shelf.shelf} onChange={(event) => onMoveBook(book, event.target.value)}>
-							<option value="move" disabled>Move to...</option>
+							<option value="move" disabled>&#8195; Move to...</option>
 							{shelves.map( optShelf => (
 								<option key={optShelf.shelf} value={optShelf.shelf}>
 								{optShelf.shelf === shelf.shelf
