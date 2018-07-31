@@ -33,6 +33,18 @@ class BooksApp extends Component {
 
 		BooksAPI.update(book, shelf)
 		.then(resp => {
+			// Se o livro foi marcado como "none", mas ainda consta em alguma
+			// prateleira, faça o rollback
+			const {currentlyReading, read, wantToRead} = resp
+			const allBooksResp  = [...currentlyReading, ...read, ...wantToRead]
+			if(shelf === 'none'){
+				if(allBooksResp.filter(id => id === book.id).length)
+					this.restoreState(book, previousShelf)
+				return
+			}
+
+			// Se o livro foi movido, mas não consta na nova prateleira, faça o
+			// rollback
 			if(!resp[shelf].filter(id => id === book.id).length)
 				this.restoreState(book, previousShelf)
 		})
@@ -84,13 +96,10 @@ class BooksApp extends Component {
 			  </div>
 			)}/>
 			<Route path='/search' render={({ history }) => (
-			  <SearchBook 
+			  <SearchBook
 				books={this.state.books}
 				shelves={shelves}
-				onMoveBook={(book, shelf) => {
-					this.moveBookToShelf(book, shelf)
-					history.push('/')
-				}}
+				onMoveBook={this.moveBookToShelf}
 			  />
 			)}/>
 		  </div>

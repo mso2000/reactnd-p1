@@ -4,9 +4,11 @@ import * as BooksAPI from './BooksAPI'
 import ListShelf from './ListShelf'
 import './App.css'
 
-// TODO: Mostrar erro (e melhorar o texto) apenas quando realizar uma busca
+// TODO: Manter nos resultados livro movido para uma prateleira
 // TODO: Mostrar estado correto de cada livro no dropbox
-// TODO: Implementar a atualização em batch de todos os livros ao fechar a página
+// TODO: Mostrar erro (e melhorar o texto) apenas quando realizar uma busca
+// TODO: Usar prop types
+// TODO: Rever identação
 
 
 class SearchBook extends Component {
@@ -14,11 +16,11 @@ class SearchBook extends Component {
 		query: '',
 		searchedBooks: []
 	}
-	
+
 	searchBooks = (query) => {
 		this.setState({ query: query.trim() })
 		if(!query.trim().length) return
-		
+
 		BooksAPI.search(query).then(response => {
 			if(response.hasOwnProperty('error')) {
 				console.log("Erro")
@@ -29,22 +31,18 @@ class SearchBook extends Component {
 			}
 		})
 	}
-	
-	markBookToMove = (book, shelf) => {
-		console.log(`${book.title} => ${shelf}`)
-	}
-	
+
 	render(){
 		const {query, searchedBooks } = this.state
 		const { books, shelves, onMoveBook } = this.props
-		
+
 		return(
 		  <div className="search-books">
 			<div className="search-books-bar">
 			  <Link className="close-search" to="/">Close</Link>
 			  <div className="search-books-input-wrapper">
-				<input 
-					type="text" 
+				<input
+					type="text"
 					placeholder="Search by title or author"
 					value = {query}
 					onChange={(event) => this.searchBooks(event.target.value)}
@@ -58,7 +56,7 @@ class SearchBook extends Component {
 					books={searchedBooks}
 					shelf="none"
 					shelves={shelves}
-					onMoveBook={this.markBookToMove}
+					onMoveBook={onMoveBook}
 				/>
 			) : (
 			  <p>ERRO</p>

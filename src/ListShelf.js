@@ -6,7 +6,7 @@ import sortBy from 'sort-by'
 class ListShelf extends Component {
 	render() {
 		const { books, shelf, shelves, onMoveBook } = this.props
-		console.log(this.props)
+//		console.log(this.props)
 		const showingBooks = books
 			.filter(book => book.shelf === shelf.shelf)
 			.sort(sortBy('title'))
