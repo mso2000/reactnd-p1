@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import * as BooksAPI from './BooksAPI'
 import ListShelf from './ListShelf'
 import './App.css'
+import debounce from 'lodash/debounce';
 
 
 class SearchBook extends Component {
@@ -24,6 +25,24 @@ class SearchBook extends Component {
 		searchedBooks: []
 	}
 
+	/*
+	* Os métodos abaixo promovem o "debouncing" da entrada de texto para não 
+	* gerar consultas na API a cada letra digitada
+	*/
+	componentDidMount() {
+        this.sendTextChange = debounce(this.sendTextChange, 1500);
+        this.setState({query: this.state.query});
+    }
+	
+	handleTextChange = (e) => {
+        this.setState({query: e.target.value});
+        this.sendTextChange(e.target.value.trim())
+    };
+    
+    sendTextChange = (query) => {
+        this.searchBooks(query);
+    };
+		
 	/*
 	* Se o texto da query estiver vazio, não será feito nenhum request para a API
 	* Se o termo não for encontrado pela API (quando o objeto de retorno possui
@@ -51,10 +70,10 @@ class SearchBook extends Component {
 	* livros atuais nas prateleiras
 	*/
 	detectShelves = (searchedBooks, currentbooks) => {
-    return searchedBooks.map(book =>
-      currentbooks.find(b => b.id === book.id)
-      || { ...book, shelf: 'none'}
-    )
+		return searchedBooks.map(book =>
+		  currentbooks.find(b => b.id === book.id)
+		  || { ...book, shelf: 'none'}
+		)
 	}
 
 	render(){
@@ -71,7 +90,7 @@ class SearchBook extends Component {
 							type="text"
 							placeholder="Search by title or author"
 							value = {query}
-							onChange={(event) => this.searchBooks(event.target.value)}
+							onChange={this.handleTextChange}
 						/>
 
 					</div>
