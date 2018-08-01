@@ -7,10 +7,10 @@ import './App.css'
 
 
 class SearchBook extends Component {
-	static propTypes = { 
+	static propTypes = {
 		books: PropTypes.array.isRequired,
-		shelves: PropTypes.array.isRequired, 
-		onMoveBook: PropTypes.func.isRequired 
+		shelves: PropTypes.array.isRequired,
+		onMoveBook: PropTypes.func.isRequired
 	}
 
 	/*
@@ -30,32 +30,31 @@ class SearchBook extends Component {
 	* atributo "error"), então é exibido um erro na UI
 	*/
 	searchBooks = (query) => {
-		this.setState({ 
-			query: query.trim(),  
+		this.setState({
+			query: query.trim(),
 			emptyStatus: 'Searching...'
 		})
 		if(!query.trim().length) return
 
 		BooksAPI.search(query).then(response => {
 			const stateToSave = response.hasOwnProperty('error') ? [] : response
-			this.setState( { 
-				searchedBooks: stateToSave,  
+			this.setState( {
+				searchedBooks: stateToSave,
 				emptyStatus: 'No books found. Try a different term.'
 			})
 		})
 	}
-	
+
 	/*
 	* Livros retornados pela busca da API não possuem atributo "shelf"
-	* A idéia aqui é criar e preencher esse atributo para cada livro de acordo com os 
+	* A idéia aqui é criar e preencher esse atributo para cada livro de acordo com os
 	* livros atuais nas prateleiras
 	*/
 	detectShelves = (searchedBooks, currentbooks) => {
-		for(let book of searchedBooks){
-			const booksMatched = currentbooks.filter(b => b.id === book.id)
-			book['shelf'] = booksMatched.length ? booksMatched[0].shelf : 'none'
-		}
-		return(searchedBooks)
+    return searchedBooks.map(book =>
+      currentbooks.find(b => b.id === book.id)
+      || { ...book, shelf: 'none'}
+    )
 	}
 
 	render(){

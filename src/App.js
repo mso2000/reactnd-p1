@@ -9,11 +9,22 @@ import './App.css'
 class BooksApp extends Component {
 	state = {
 		books: [],
+		emptyStatus: 'Retrieving books...',
 	}
 
 	componentDidMount() {
-		BooksAPI.getAll().then( books => {
+		BooksAPI.getAll()
+		.then( books => {
 			this.setState({ books })
+		})
+		.catch(error => {
+			console.log(error)
+			this.setState(
+				{
+					books: [],
+					emptyStatus: 'Error retrieving books. Try again later.'
+				}
+			)
 		})
 	}
 
@@ -22,14 +33,14 @@ class BooksApp extends Component {
 	* e atualizar o estado do componente.
 	*/
 	setShelf = (book, shelf) => {
-		book["shelf"] = shelf
+		const updatedBook = { ...book, shelf }
 		this.setState(state => ({
-			books: state.books.filter(b => b.id !== book.id).concat([book])
+			books: state.books.filter(b => b.id !== book.id).concat([updatedBook])
 		}))
 	}
 
 	/*
-	* Método para mover um livro para uma nova prateleira (shelf). 
+	* Método para mover um livro para uma nova prateleira (shelf).
 	* Caso haja algum problema com o update na API, será realizado um rollback das
 	* alterações na UI
 	*/
@@ -62,7 +73,7 @@ class BooksApp extends Component {
 		* Prateleiras disponíveis e códigos correspondentes na API
 		*
 		* Obs: Não existe prateleira "None" na API, mas no app ele será tratado como
-		* uma prateleira para exibição dessa opção nos "dropboxes" e exibição dos resultados 
+		* uma prateleira para exibição dessa opção nos "dropboxes" e exibição dos resultados
 		* da busca, que não são atrelados a prateleiras.
 		*/
 		const shelves = [
@@ -84,6 +95,8 @@ class BooksApp extends Component {
 			}
 		]
 
+		const {books, emptyStatus} = this.state
+
 		return(
 			<div className="app">
 				<Route exact path='/' render={() => (
@@ -91,18 +104,22 @@ class BooksApp extends Component {
 						<div className="list-books-title">
 							<h1>MyReads</h1>
 						</div>
-						<div className="list-books-content">
-							{shelves.filter(shelf => shelf.shelf !== "none").map(shelf => (
-							<div key={shelf.shelf}>
-								<ListShelf
-									books={this.state.books}
-									shelf={shelf}
-									shelves={shelves}
-									onMoveBook={this.moveBookToShelf}
-								/>
+						{books.length ? (
+							<div className="list-books-content">
+								{shelves.filter(shelf => shelf.shelf !== "none").map(shelf => (
+								<div key={shelf.shelf}>
+									<ListShelf
+										books={books}
+										shelf={shelf}
+										shelves={shelves}
+										onMoveBook={this.moveBookToShelf}
+									/>
+								</div>
+								))}
 							</div>
-							))}
-						</div>
+						) : (
+						  <h2 className="search-error">{emptyStatus}</h2>
+						)}
 						<div className="open-search">
 							<Link to='/search'>Add a book</Link>
 						</div>
