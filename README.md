@@ -4,6 +4,33 @@ Neste projeto temos uma aplicação de estante de livros que permite selecionar 
 
 **OBS:** A API do backend tem uma limitação para os termos de busca que reconhece apenas um conjunto fixo já pré-definido, conforme o arquivo [SEARCH_TERMS.md](SEARCH_TERMS.md).
 
+**Imagens:**
+
+<table align="center">
+  <tr>
+     <td>
+       <img src="screenshots/p1_1.jpg" title="Tela Inicial">
+       <p align="center">Tela Inicial</p>
+     </td>
+     <td>
+       <img src="screenshots/p1_2.jpg" title="Livro movido para a nova prateleira">
+       <p align="center">Livro movido para a nova prateleira</p>
+     </td>
+  </tr>
+</table>
+<table align="center">
+  <tr>
+     <td>
+       <img src="screenshots/p1_3.jpg" title="Tela de busca do acervo">
+       <p align="center">Tela de busca do acervo</p>
+     </td>
+     <td>
+       <img src="screenshots/p1_4.jpg" title="Livro adicionado do acervo">
+       <p align="center">Livro adicionado do acervo</p>
+     </td>
+  </tr>
+</table>
+
 
 ## Instalação:
 
